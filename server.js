@@ -6,15 +6,15 @@ const path = require('path');
 const cors = require('cors');
 
 const app = express();
-const PORT= 7200;
+const PORT = 7200;
 
 // Mailgun configuration
-const api_key = 'bd334b01309b4b6337df5378854a9f19-3750a53b-05b620d2';
-const domain = 'sandbox48a8e453581f4854a2a562c482764ac2.mailgun.org';
+const api_key = '8dad48b049fa288332c9cc2dce29764a-324e0bb2-10fb2bc7';
+const domain = 'sandbox6f11405607d84a57ab1da977083995d8.mailgun.org';
 
 const mailgunClient = mailgun({ apiKey: api_key, domain: domain });
 
-app.use(cors()); 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -27,11 +27,16 @@ app.get('*', (req, res) => {
 app.post('/subscribe', (req, res) => {
   const { Email } = req.body;
 
+  // Check if Email is missing or empty
+  if (!Email || Email.trim() === '') {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+
   const mailgunData = {
     from: 'Aditya <adityabharti528@gmail.com>',
     to: Email,
     subject: "Welcome to maler",
-    text: "welcom to our brand new softare you will be reciving regular emails regarding our latest launches."
+    text: "Welcome to our brand new software. You will be receiving regular emails regarding our latest launches."
   };
 
   mailgunClient.messages().send(mailgunData, (error, body) => {
@@ -46,8 +51,5 @@ app.post('/subscribe', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running at port ${PORT}`);
+  console.log(`Server is running at port ${PORT}`);
 });
-
-
-
